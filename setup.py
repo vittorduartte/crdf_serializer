@@ -11,7 +11,7 @@ setuptools . setup (
     description = "Some decorators responsible for preparing and serializing RDF files." ,
     long_description = long_description ,
     long_description_content_type = "text/markdown" ,
-    url = "https://github.com/vittorduartte/personal_rdf_package" ,
+    url = "https://github.com/vittorduartte/crdf_serializer" ,
     packages = setuptools . find_packages (),
     classifiers = [
         "Programming Language :: Python :: 3" ,
