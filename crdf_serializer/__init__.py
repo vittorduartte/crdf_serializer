@@ -1,3 +1,4 @@
+from rdflib.namespace import RDF, FOAF
 from rdflib import URIRef, BNode, Literal
 from rdflib import Graph
 from rdflib import Namespace
@@ -7,9 +8,9 @@ def get_class_vars(cl):
 
 class ObjectDecorator():
 
-    def __init__(self, arg1, arg2):
-        self.arg1 = arg1
-        self.arg2 = arg2
+    def __init__(self, node_type, node_url):
+        self.node_type = node_type
+        self.node_url = node_url
 
 
     def link_nodes (self, object):
@@ -22,8 +23,11 @@ class ObjectDecorator():
         def inner_func(*args, **kwargs):
             args[0].g = Graph()
             obj = fun(*args, **kwargs)
-            args[0]._uri = URIRef(self.arg1+args[0].id)
-            args[0].g.add( (args[0]._uri, RDF.type, self.arg2) )
+            if (self.node_url):
+                args[0]._uri = URIRef(self.node_url + args[0].id)
+            else:
+                args[0]._uri = BNode()
+            args[0].g.add( (args[0]._uri, RDF.type, self.node_type) )
             self.link_nodes(args[0])
             return obj
 
@@ -31,20 +35,23 @@ class ObjectDecorator():
 
 class BindDecorator ():
 
-    def __init__(self, arg1, arg2):
-        self.arg1 = arg1
-        self.arg2 = arg2
+    def __init__(self, prefix, namespace):
+        self.prefix = prefix
+        self.namespace = namespace
 
 
     def __call__(self, fun, *args, **kwargs):
         def inner_func(*args, **kwargs):
-            args[0].g.bind(self.arg1, self.arg2)
+            args[0].g.bind(self.prefix, self.namespace)
             return fun(*args, **kwargs)
         return inner_func
 
 
-def serialize_all (l):
-    gtotal = Graph()
-    for o in l:
-        gtotal = gtotal + o.g
-    return gtotal.serialize ().decode()
+def graph (value):
+    if isinstance(value, list):
+        gtotal = Graph()
+        for o in value:
+            gtotal = gtotal + o.g
+        return gtotal
+    else:
+        return value.g
