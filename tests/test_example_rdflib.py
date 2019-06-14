@@ -31,5 +31,4 @@ class TestSelect(unittest.TestCase):
     def test(self):
         for person in graph(p).subjects(RDF.type, FOAF.Person):
             for mbox in graph(p).objects(person, FOAF.mbox):
-                print ("----")
                 self.assertTrue(mbox == URIRef("mailto:donna@example.org"))
