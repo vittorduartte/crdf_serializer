@@ -33,11 +33,11 @@ class ObjectDecorator():
 
         return inner_func
 
-def graph (value):
-    if isinstance(value, list):
-        gtotal = Graph()
-        for o in value:
-            gtotal = gtotal + o.g
-        return gtotal
-    else:
-        return value.g
+def graph (l):
+    g = Graph()
+    for o in l:
+        for s, p, o in o.g:
+            g.add ((s,p,o))
+    return g
+
+
